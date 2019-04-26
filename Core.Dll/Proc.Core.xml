@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Proc.Core</name>
+    </assembly>
+    <members>
+        <member name="P:ProcCore.WebCore.FilesUpScope.limitExtType">
+            <summary>
+            以副檔名為設定，此為禁止上傳類型，要加. 例.exe。
+            </summary>
+        </member>
+        <member name="M:ProcCore.NetExtension.ExtensionDateTime.CalendarFirstDay(System.DateTime)">
+            <summary>
+            行事曆元件計算用
+            </summary>
+            <param name="dt"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ProcCore.NetExtension.ExtensionDateTime.CalendarLastDay(System.DateTime)">
+            <summary>
+            行事曆元件計算用
+            </summary>
+            <param name="dt"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ProcCore.EncryptString.Cryp(System.String)">
+            <summary>
+            字串加密為不可還原
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

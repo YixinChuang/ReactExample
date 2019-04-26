@@ -1,0 +1,402 @@
+﻿@{
+
+    ViewBag.Title = "About";
+}
+@section Breadcrumb{
+    <a class="btn" href="~/Home">程式</a>
+    <a class="btn" href="~/Home/ShowCode02">說明pub.ts</a>
+}
+@section css{
+    <style>
+        pre {
+            font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+            margin-bottom: 10px;
+            overflow: auto;
+            width: auto;
+            padding: 5px;
+            background-color: #eee;
+            width: 650px !ie7;
+            padding-bottom: 20px !ie7;
+        }
+    </style>
+}
+<!--
+    Html 轉碼:https://www.opinionatedgeek.com/codecs/htmlencoder
+    Google程式碼上色:https://github.com/google/code-prettify
+-->
+@section scripts{
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+}
+<h2>
+    app.tsx
+    <small className="item text-right">
+        主要用來存放畫面
+    </small>
+</h2>
+
+<p>頂端元件</p>
+<pre>
+<code class="prettyprint">
+    interface TopNodeProps {
+    }
+    class TopNode extends React.Component&lt;TopNodeProps, any&gt;{
+        constructor(props) {
+            super(props);
+            this.state = {};
+        }
+        render() {
+            let pp = this.props;
+            return &lt;div&gt;
+                &lt;GridView /&gt;{/*列表畫面*/}
+                &lt;EditView /&gt;{/*編輯畫面*/}
+            &lt;/div&gt;;
+        }
+    }
+</code>
+</pre>
+<p>列表介面元件</p>
+<pre>
+<code class="prettyprint">
+            interface GridProps {
+                //列表搜尋參數
+                search?: {
+                keyword: string,
+                },
+                oper_id?: string,//設定特殊事件時產生隨機亂碼
+                edit_type?: IEditType,//修改狀態(新增insert、修改modify、無:none) none時畫面要在列表介面
+                page_grid?: GridInfo&lt;server.Member&gt;,//列表資料
+                setQueryValue?: Function,//修改 列表搜尋參數
+                setPage?: Function,//設定列表資料參數
+                addState?: Function,//定義Member新增時預設值 並進入編輯畫面
+                callEdit?: Function,//呼叫api取得單一Member資料 並進入編輯畫面
+                callRemove?: Function//呼叫api刪除一筆Member資料
+                callPage?: Function,//呼叫api取得Member列表資料
+            }
+            class Grid extends React.Component&lt;GridProps, any&gt;{
+
+                constructor(props) {
+                    super(props);
+                    this.chgQryVal = this.chgQryVal.bind(this);
+                    this.packSearch = this.packSearch.bind(this);
+                    this.clkSearch = this.clkSearch.bind(this);
+                    this.callEdit = this.callEdit.bind(this);
+                    this.clkAdd = this.clkAdd.bind(this);
+                    this.reloadQuery = this.reloadQuery.bind(this);
+                    this.callRemove = this.callRemove.bind(this);
+
+                    this.keep_search = {};
+                    this.keep_field = null;
+                    this.keep_sort = null;
+                    this.state = {};
+                }
+                componentDidUpdate(prevProps, prevState) {
+                    let pp = this.props
+                    if (prevProps.oper_id != pp.oper_id) {
+                        this.reloadQuery(null);
+                    }
+                }
+                keep_search;
+                keep_field;
+                keep_sort;
+                //更新 列表搜尋參數
+                chgQryVal(name, value: any, e: React.SyntheticEvent&lt;EventTarget&gt;) {
+                    let struct = {
+                        [name]: { $set: value }
+                    };
+                    let n_state = update(this.props.search, struct);
+                    this.props.setQueryValue(n_state);
+
+                    //每當列表搜尋參數變更時,頁面參數要返回第一頁
+                    let structpage = {
+                        page: { $set: 1 }
+                    };
+                    let p_state = update(this.props.page_grid, structpage);
+                    this.props.setPage(p_state);
+                }
+                packSearch(p) {
+                    const r = Object.assign(this.props.search, p);
+                    return r;
+                }
+                //點擊搜尋按鈕更新列表資料
+                clkSearch(e) {
+                    e.preventDefault();
+                    this.keep_search = Object.assign({}, this.props.search);
+                    var p = this.packSearch({ page: 1 });
+                    this.props.callPage(p);
+                }
+                //更新列表資料
+                reloadQuery(page) {
+                    let toPage = page == null ? this.props.page_grid.page : page;
+                    const p = {
+                    page: toPage,
+                    _sort: this.keep_sort,
+                    _field: this.keep_field
+                    };
+                    let query_page = this.packSearch(p);
+                    this.props.callPage(query_page);
+                }
+                //編輯會員資料
+                callEdit(id, e: React.SyntheticEvent&lt;EventTarget&gt;) {
+                    this.props.callEdit(id);
+                }
+                //新增會員資料
+                clkAdd(e: React.SyntheticEvent&lt;EventTarget&gt;) {
+                    this.props.addState();
+                }
+                //刪除會員資料
+                callRemove(id, e: React.SyntheticEvent&lt;EventTarget&gt;) {
+                    if (confirm("確定要刪除?")) {
+                        this.props.callRemove(id);
+                        this.reloadQuery(null);
+                    }
+                }
+                render() {
+
+                    let out_html: JSX.Element = null;
+                    let pp = this.props;
+                    let st = this.state;
+                    if (!pp.page_grid)
+                    return null;
+                    let row_data = pp.page_grid.rows;
+
+                    let show = pp.edit_type == IEditType.none ? 'block' : 'none';
+                    out_html = &lt;div style={{ display: show }}&gt;
+                        &lt;div className="btn-group mb-8"&gt;
+                        &lt;PWButton className="btn success oi" dataGlyph="plus" onClick={this.clkAdd}&gt;新增&lt;/PWButton&gt;
+                        &lt;/div&gt;
+                        &lt;form className="table-head form-inline" onSubmit={this.clkSearch}&gt;
+                            &lt;InputText
+                            style={{ width: '225px' }}
+                            inputClassName="form-element"
+                            onChange={this.chgQryVal.bind(this, 'keyword')}
+                            value={pp.search.keyword}
+                            placeholder="請輸入關鍵字"
+                            /&gt; {}
+                            &lt;button type="submit" className="btn oi" data-glyph="magnifying-glass"&gt;查詢&lt;/button&gt;
+                        &lt;/form&gt;
+
+                        &lt;table className="table-list table-striped table-hover"&gt;
+                            &lt;thead&gt;
+                                &lt;tr&gt;
+                                    &lt;th className="item-edit"&gt;編輯&lt;/th&gt;
+                                    &lt;th className="text-left"&gt;編號&lt;/th&gt;
+                                    &lt;th className="text-left"&gt;名稱&lt;/th&gt;
+                                    &lt;th className="text-left"&gt;生日&lt;/th&gt;
+                                    &lt;th className="text-left"&gt;地址&lt;/th&gt;
+                                &lt;/tr&gt;
+                            &lt;/thead&gt;
+                            &lt;tbody&gt;
+                                {
+                                    row_data.map((item, i) =&gt; {
+                                        return &lt;tr key={'row-' + i}&gt;
+                                            &lt;td className="item-edit"&gt;
+                                            &lt;PWButton key={"modify-" + i} className="hover-primary tooltip oi" title="修改" dataGlyph="pencil" onClick={this.callEdit.bind(this, item.id)}&gt;修改&lt;/PWButton&gt;
+                                            &lt;PWButton key={"delete-" + i} className="hover-danger oi" title="刪除" dataGlyph="trash" onClick={this.callRemove.bind(this, item.id)}&gt;刪除&lt;/PWButton&gt;
+                                            &lt;/td&gt;
+                                            &lt;td className="text-left"&gt;{item.id}&lt;/td&gt;
+                                            &lt;td className="text-left"&gt;{item.name}&lt;/td&gt;
+                                            &lt;td&gt;{stdChiDate(item.birthday)}&lt;/td&gt;
+                                            &lt;td&gt;{item.zip}{item.city}{item.country}{item.address}&lt;/td&gt;
+                                        &lt;/tr&gt;
+                                    })
+                                }
+                            &lt;/tbody&gt;
+                        &lt;/table&gt;
+                        &lt;PageFooter search={pp.search} page_grid={pp.page_grid} callPage={this.props.callPage} /&gt;
+                        &lt;/div &gt;;
+                    return out_html;
+                }
+            }
+        </code>
+  </pre>
+<p>編輯元件</p>
+<pre>
+<code class="prettyprint">
+            interface EditProps {
+                edit_type?: IEditType,//修改狀態(新增insert、修改modify、無:none) insert、modify時畫面要在修改介面
+                field?: server.Member,//Member資料
+                setInputValue?: Function,//修改 Member資料
+                submitData?: Function,//更新 Member資料 至Server
+                returnGrid?: Function//返回列表介面
+            }
+            class Edit extends React.Component&lt;EditProps, any&gt;{
+                constructor(props) {
+                    super(props);
+                    this.cancel = this.cancel.bind(this);
+                    this.submit = this.submit.bind(this);
+                    this.chgFldVal = this.chgFldVal.bind(this);
+                    this.onAddressChange = this.onAddressChange.bind(this);
+                    this.state = {
+                    };
+                }
+                //修改 Member資料 一般欄位
+                chgFldVal(name, value: any, e: React.SyntheticEvent&lt;EventTarget&gt;) {
+                    let input: HTMLInputElement = e.target as HTMLInputElement;
+                    let struct = {
+                    [name]: { $set: value }
+                    };
+                    let n_state = update(this.props.field, struct);
+                    this.props.setInputValue(n_state);
+                }
+                //更新 Member資料 至server
+                submit(e: React.FormEvent&lt;EventTarget&gt;) {
+                    e.preventDefault();
+                    let id = this.props.field.id;
+                    this.props.submitData(id, this.props.edit_type, this.props.field);
+                    return;
+                }
+                //返回列表
+                cancel(e) {
+                    this.props.returnGrid();
+                }
+                render() {
+
+                    let out_html: JSX.Element = null;
+                    let pp = this.props;
+                    let st = this.state;
+                    let show = pp.edit_type == IEditType.insert || pp.edit_type == IEditType.modify ? true : false;
+
+                    if (!show) return null;
+                    const vm = InputViewMode.edit;
+                    out_html = &lt;div&gt;
+                        &lt;nav className="btn-group mb-24"&gt;
+                            &lt;PWButton type="button" className="btn cancel oi" dataGlyph="chevron-left" onClick={this.cancel}&gt;回到列表&lt;/PWButton&gt;
+                        &lt;/nav&gt;
+                        &lt;form id="myForm" className="form-list" onSubmit={this.submit}&gt;
+                            &lt;table className="full bg-white"&gt;
+                                &lt;colgroup&gt;
+                                    &lt;col style={{ "width": "20%" }} /&gt;
+                                &lt;/colgroup&gt;
+                                &lt;tbody&gt;
+                                    &lt;tr&gt;
+                                        &lt;th className="item text-right"&gt;&lt;sup className="help" title="必填"&gt;*&lt;/sup&gt;名稱&lt;/th&gt;
+                                        &lt;td className="text-left"&gt;
+                                            &lt;InputText
+                                            inputViewMode={vm}
+                                            inputClassName="form-element"
+                                            onChange={this.chgFldVal.bind(this, mf.name)}
+                                            value={pp.field.name}
+                                            required={true}
+                                            maxLength={50}
+                                            /&gt;
+                                        &lt;/td&gt;
+                                    &lt;/tr&gt;
+                                    &lt;tr&gt;
+                                        &lt;th className="item text-right"&gt;&lt;sup className="help" title="必填"&gt;*&lt;/sup&gt; 生日&lt;/th&gt;
+                                        &lt;td className="text-left"&gt;
+                                            &lt;DatePickText
+                                            inputViewMode={vm}
+                                            inputClassName="form-element"
+                                            onChange={this.chgFldVal.bind(this, mf.birthday)}
+                                            value={pp.field.birthday}
+                                            required={true}
+                                            /&gt;
+                                        &lt;/td&gt;
+                                    &lt;/tr&gt;
+                                    &lt;tr&gt;
+                                        &lt;th className="item text-right"&gt;狀態&lt;/th&gt;
+                                        &lt;td className="text-left"&gt;
+                                            &lt;SelectText
+                                            inputViewMode={vm}
+                                            inputClassName="form-element"
+                                            onChange={this.chgFldVal.bind(this, mf.state)}
+                                            value={pp.field.state}
+                                            is_blank={true}
+                                            blank_text="請選擇"
+                                            options={options_state}
+                                            required={true}
+                                            /&gt;
+                                        &lt;/td&gt;
+                                    &lt;/tr&gt;
+                                &lt;/tbody&gt;
+                            &lt;/table&gt;
+                            &lt;footer className="submit-bar"&gt;   
+                                &lt;PWButton type="submit" className="btn success oi offset-2" dataGlyph="circle-check"&gt;儲存&lt;/PWButton&gt; {}
+                                &lt;PWButton type="button" className="btn cancel oi" dataGlyph="circle-x" onClick={this.cancel}&gt;回到列表&lt;/PWButton&gt;
+                            &lt;/footer&gt;
+                        &lt;/form&gt;
+                    &lt;/div &gt;;
+                    return out_html;    
+                }
+            }
+        </code>
+  </pre>
+<p>定義各畫面會使用到那些資料或事件(將app.tsx畫面與pub.ts資料做連結)</p>
+<pre>
+<code class="prettyprint">
+        //定義 頂端元件 會使用到那些store資料
+        const TopNodeToProps = (state, ownProps) =&gt; {
+            return {
+                edit_type: state.edit_type,
+            }
+        }
+        //定義 頂端元件 會使用到那些action事件
+        const TopNodeDispatch = (dispatch, ownProps) =&gt; {
+            let s = bindActionCreators({
+            }, dispatch);
+            return s;
+        }
+        //將 資料及事件 與畫面做連結
+        let TopNodeView = connect&lt;{}, {}, {}&gt;(TopNodeToProps, TopNodeDispatch)(TopNode)
+        //定義 列表元件 會使用到那些store資料
+        const GridToProps = (state, ownProps) =&gt; {
+            return {
+                edit_type: state.edit_type,
+                page_grid: state.page_grid,
+                search: state.search,
+                oper_id: state.oper_id
+            }
+        }
+        //定義 列表元件 會使用到那些action事件
+        const GridDispatch = (dispatch, ownProps) =&gt; {
+            let s = bindActionCreators({
+                setInputValue,
+                setQueryValue,
+                callPage,
+                callEdit,
+                addState,
+                callRemove,
+                setPage,
+            }, dispatch);
+            return s;
+        }
+        //將 資料及事件 與畫面做連結
+        let GridView = connect&lt;{}, {}, {}&gt;(GridToProps, GridDispatch)(Grid)
+
+        //定義 編輯元件 會使用到那些store資料
+        const EditToProps = (state, ownProps) =&gt; {
+            return {
+                edit_type: state.edit_type,
+                field: state.field,
+            }
+        }
+        //定義 編輯元件 會使用到那些action事件
+        const EditDispatch = (dispatch, ownProps) =&gt; {
+            let s = bindActionCreators({
+                setInputValue,
+                callRemove,
+                returnGrid,
+                submitData,
+            }, dispatch);
+            return s;
+        }
+        //將 資料及事件 與畫面做連結
+        let EditView = connect&lt;{}, {}, {}&gt;(EditToProps, EditDispatch)(Edit)
+    </code>
+</pre>
+<p>最後控制React要顯示在哪個html元素上</p>
+<pre>
+<code class="prettyprint">
+        async function Start() {
+            var dom = document.getElementById('page_content');
+            //將畫面及管理的資料做連結
+            render(&lt;Provider store={store}&gt;
+                &lt;TopNodeView /&gt;
+            &lt;/Provider&gt;, dom);
+            //呼叫callload事件抓取列表資料
+            store.dispatch(callPage(null));
+        }
+
+        Start(); //程式啟動點
+    </code>
+</pre>

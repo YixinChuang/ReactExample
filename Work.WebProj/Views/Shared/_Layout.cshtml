@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - 我的 ASP.NET 應用程式</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet">
+    <link href="~/Content/css/verder/react-datepicker.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/Content/css/vendor/open-iconic.css">
+    <link rel="stylesheet" href="~/Content/css/vendor/toastr.css">
+    <link href="~/Content/css/grid.css" rel="stylesheet" />
+    <link href="~/Content/css/admin.css" rel="stylesheet" />
+    @RenderSection("css", required: false)
+    <script>
+        var gb_approot = '@Url.Content("~")';
+    </script>
+</head>
+<body>
+    <div class="wrap p-16 text-left">
+        <h3 class="title">
+            會員資料編輯
+            @RenderSection("Breadcrumb", false)
+        </h3>
+        @RenderBody()
+    </div>
+    @RenderSection("scripts", required: false)
+</body>
+</html>
