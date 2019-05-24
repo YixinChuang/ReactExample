@@ -18,8 +18,20 @@
           <Property Name="address" Type="nvarchar" MaxLength="100" />
           <Property Name="state" Type="char" MaxLength="1" Nullable="false" />
         </EntityType>
+        <EntityType Name="TBLogin">
+          <Key>
+            <PropertyRef Name="LoginId" />
+          </Key>
+          <Property Name="LoginId" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Pwd" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="50" />
+          <Property Name="LoginType" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="state" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="last_login" Type="smalldatetime" />
+        </EntityType>
         <EntityContainer Name="Bpple_DBModelStoreContainer">
           <EntitySet Name="Member" EntityType="Self.Member" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TBLogin" EntityType="Self.TBLogin" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -27,6 +39,7 @@
       <Schema Namespace="Bpple_DBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="Bpple_DBEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Member" EntityType="Bpple_DBModel.Member" />
+          <EntitySet Name="TBLogin" EntityType="Bpple_DBModel.TBLogin" />
         </EntityContainer>
         <EntityType Name="Member">
           <Key>
@@ -40,6 +53,17 @@
           <Property Name="country" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="address" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="state" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+        </EntityType>
+        <EntityType Name="TBLogin">
+          <Key>
+            <PropertyRef Name="LoginId" />
+          </Key>
+          <Property Name="LoginId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Pwd" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LoginType" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="state" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="last_login" Type="DateTime" Precision="0" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -58,6 +82,18 @@
                 <ScalarProperty Name="birthday" ColumnName="birthday" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TBLogin">
+            <EntityTypeMapping TypeName="Bpple_DBModel.TBLogin">
+              <MappingFragment StoreEntitySet="TBLogin">
+                <ScalarProperty Name="last_login" ColumnName="last_login" />
+                <ScalarProperty Name="state" ColumnName="state" />
+                <ScalarProperty Name="LoginType" ColumnName="LoginType" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="Pwd" ColumnName="Pwd" />
+                <ScalarProperty Name="LoginId" ColumnName="LoginId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

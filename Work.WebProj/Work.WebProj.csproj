@@ -151,6 +151,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ah\VC.ashx.cs">
+      <DependentUpon>VC.ashx</DependentUpon>
+    </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -175,6 +178,9 @@
     <Compile Include="EDM\Member.cs">
       <DependentUpon>BppleDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="EDM\TBLogin.cs">
+      <DependentUpon>BppleDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -185,6 +191,7 @@
   <ItemGroup>
     <Content Include="Content\css\admin.css" />
     <Content Include="Content\css\grid.css" />
+    <Content Include="Content\css\index.css" />
     <Content Include="Content\css\verder\open-iconic.css" />
     <Content Include="Content\css\verder\react-datepicker.css" />
     <Content Include="Content\css\verder\toastr.css" />
@@ -211,6 +218,8 @@
     </Content>
     <Content Include="package.json" />
     <Compile Include="Models\ProcCore.HandleResult.cs" />
+    <Content Include="Ah\VC.ashx" />
+    <Compile Include="Inc\DotWeb.CommSetup.cs" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -228,6 +237,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="tsconfig.json" />
     <Content Include="Views\Home\ShowCode02.cshtml" />
+    <Content Include="Views\Home\Member.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -250,6 +260,7 @@
     <TypeScriptCompile Include="Scripts\src\inc\cbnReduce.ts" />
     <TypeScriptCompile Include="Scripts\comm\comm-func.ts" />
     <TypeScriptCompile Include="Scripts\comm\comm-run.ts" />
+    <TypeScriptCompile Include="Scripts\src\login\app.ts" />
     <TypeScriptCompile Include="Scripts\src\member\app.tsx" />
     <TypeScriptCompile Include="Scripts\src\member\pub.ts" />
     <TypeScriptCompile Include="Scripts\src\_path\MemberPath.ts" />

@@ -1,12 +1,36 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
-@section Breadcrumb{
-    <a class="btn" href="~/Home/ShowCode01">說明app.tsx</a>
-    <a class="btn" href="~/Home/ShowCode02">說明pub.ts</a>
-}
 @section scripts {
+    <script>
+      var lg_vcode = '@WebSetup.CheckCodeSession';
+    </script>
     <script src="~/Scripts/build/app/vendors.js"></script>
-    <script src="~/Scripts/build/app/member.js"></script>
+    <script src="~/Scripts/build/app/login.js"></script>
 }
-<div id="page_content"></div>
+
+<section class="tab-main col-md-5 push-md-1">
+    <form action="" id="tab1" class="login tab-pane in" autocomplete="off">
+        <h2>LOGIN</h2>
+        <label class="icon oi" data-glyph="person">
+            <input class="form-element" tabindex="1" type="text" id="m_act" autocomplete="off" required placeholder="請輸入帳號" maxlength="30">
+        </label>
+
+        <label class="icon oi" data-glyph="lock-locked">
+            <input class="form-element" tabindex="2" type="password" id="m_pwd" autocomplete="off" required placeholder="請輸入密碼">
+        </label>
+
+        <label class="icon oi" data-glyph="shield">
+            <input class="form-element" tabindex="3" type="text" id="m_Validate" required placeholder="請輸入驗證碼">
+        </label>
+
+        <p class="clearfix">
+            <img class="pull-left" alt="驗證碼" id="m_login_img" src="~/Ah/VC.ashx?vn=@WebSetup.CheckCodeSession" />
+            <button tabindex="5" type="button" onclick="ReSetVcImg()" class="hover-secondary font-lg ml-4 oi" data-glyph="loop-circular" title="更新驗證碼"></button>
+        </p>
+
+        <footer class="submit-bar">
+            <button class="btn full" tabindex="3" type="submit">登入</button>
+        </footer>
+    </form>
+</section>

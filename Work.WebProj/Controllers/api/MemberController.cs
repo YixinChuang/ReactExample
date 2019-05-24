@@ -14,6 +14,7 @@ using System.Web.Http;
 namespace DotWeb.Api
 {
     [RoutePrefix("api/Member")]
+    [Authorize(Roles = "M")]//Roles可設可不設
     public class MemberController : BaseApiController
     {
         /// <summary>

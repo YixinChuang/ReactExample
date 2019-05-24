@@ -2,7 +2,7 @@
     ViewBag.Title = "About";
 }
 @section Breadcrumb{
-    <a class="btn" href="~/Home">程式</a>
+    <a class="btn" href="~/Home/Member">程式</a>
     <a class="btn" href="~/Home/ShowCode01">說明app.tsx</a>
 }
 @section css{
@@ -190,7 +190,7 @@
 </pre>
 <p>store資料管理 儲存各資料,並管理何時更新</p>
 <pre>
-    <code class="prettyprint">
+<code class="prettyprint">
         //列表資料
         const page_grid = (state: GridInfo&lt;server.Member&gt; = { rows: [] }, action): GridInfo&lt;server.Member&gt; =&gt; {
             switch (action.type) {

@@ -6,6 +6,7 @@ var p = null;
 var ent = {
     //基礎功能
     member: path.resolve(__dirname, 'Scripts/src/member/app.js'),
+    login: path.resolve(__dirname, 'Scripts/src/login/app.js'),
 
     vendors: ['jquery', 'react',  'moment', path.resolve(__dirname, 'Scripts/comm/comm-run')]
 };

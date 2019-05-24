@@ -6,6 +6,20 @@ using System.Web;
 namespace ProcCore.HandleResult
 {
     /// <summary>
+    /// 帳號狀態
+    /// </summary>
+    public static class UserState
+    {
+        /// <summary>
+        /// 使用中
+        /// </summary>
+        public const string Active = "A";
+        /// <summary>
+        /// 停權中
+        /// </summary>
+        public const string Stop = "S";
+    }
+    /// <summary>
     /// 回傳基礎類別
     /// </summary>
     public class ResultBase
@@ -35,6 +49,12 @@ namespace ProcCore.HandleResult
     {
         public T id { get; set; }
     }
+    class LoginResult : ResultBase
+    {
+        public string url { get; set; }
+        public bool vildate { get; set; }
+    }
+
     public class GridInfo<T> : ResultBase
     {
         public int total;

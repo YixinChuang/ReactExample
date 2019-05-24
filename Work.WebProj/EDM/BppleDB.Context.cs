@@ -26,5 +26,6 @@ namespace ReactExample.EDM
         }
     
         public virtual DbSet<Member> Member { get; set; }
+        public virtual DbSet<TBLogin> TBLogin { get; set; }
     }
 }

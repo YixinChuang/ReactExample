@@ -6,6 +6,7 @@
     <edmx:Diagrams>
       <Diagram DiagramId="cdb131d2b4b74217b04f701f6dd344c4" Name="Diagram1">
         <EntityTypeShape EntityType="Bpple_DBModel.Member" Width="1.5" PointX="3.375" PointY="0.75" />
+        <EntityTypeShape EntityType="Bpple_DBModel.TBLogin" Width="1.5" PointX="0.75" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
